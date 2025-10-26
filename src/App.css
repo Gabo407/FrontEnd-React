@@ -1,0 +1,30 @@
+.card img {
+  object-fit: cover;
+  height: 160px;
+}
+
+.invalid-feedback {
+  display: block;
+  visibility: hidden;
+}
+
+.is-invalid + .invalid-feedback,
+.invalid-feedback.mostrar {
+  visibility: visible;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+footer {
+  margin-top: auto;
+}
