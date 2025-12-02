@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useAuth } from './AuthContext';
+import { setCookie, getCookie, deleteCookie } from '../utils/cookieUtils';
 
 const CarritoContext = createContext(null);
 const CLAVE = 'carrito';
@@ -9,14 +11,25 @@ export function useCarrito() {
 
 export function CarritoProvider({ children }) {
   const [items, setItems] = useState([]);
+  const { isAuthenticated } = useAuth();
 
+  // Cargar carrito al inicializar
   useEffect(() => {
-    const carrito = JSON.parse(localStorage.getItem(CLAVE) || '[]');
+    const carritoGuardado = getCookie(CLAVE);
+    const carrito = carritoGuardado ? JSON.parse(carritoGuardado) : [];
     setItems(carrito);
   }, []);
 
+  // Limpiar carrito cuando se cierra sesión
+  useEffect(() => {
+    if (!isAuthenticated) {
+      deleteCookie(CLAVE);
+      setItems([]);
+    }
+  }, [isAuthenticated]);
+
   const guardarCarrito = (carrito) => {
-    localStorage.setItem(CLAVE, JSON.stringify(carrito));
+    setCookie(CLAVE, JSON.stringify(carrito));
     setItems(carrito);
   };
 

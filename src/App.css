@@ -28,3 +28,92 @@ body {
 footer {
   margin-top: auto;
 }
+
+/* Responsive improvements */
+.hover-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.hover-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Mobile optimizations */
+@media (max-width: 576px) {
+  .navbar-brand span {
+    display: none;
+  }
+  
+  .navbar-brand img {
+    height: 28px;
+  }
+  
+  .container {
+    padding: 0.75rem;
+  }
+  
+  .card-body {
+    padding: 0.75rem;
+  }
+  
+  h1, h2, h3 {
+    font-size: 1.25rem !important;
+  }
+  
+  .form-control {
+    font-size: 16px; /* Previene zoom en iOS */
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 577px) and (max-width: 992px) {
+  .navbar-brand span {
+    font-size: 1rem;
+  }
+}
+
+/* General form styling */
+.form-control:focus,
+.form-select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Button improvements */
+.btn {
+  transition: all 0.2s;
+}
+
+.btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Accessibility */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Loading spinner */
+@media (max-width: 768px) {
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+/* Modal responsiveness */
+@media (max-width: 576px) {
+  .modal-body {
+    padding: 1rem 0.75rem;
+  }
+}

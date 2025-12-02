@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Container, Form, Alert } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 function Login() {
@@ -10,10 +10,26 @@ function Login() {
   });
   const [errors, setErrors] = useState({});
   const [loginError, setLoginError] = useState('');
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Limpiar error del campo
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoginError('');
     const newErrors = {};
@@ -29,18 +45,21 @@ function Login() {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      const success = login(formData.email, formData.password);
-      if (success) {
+      setLoading(true);
+      const resultado = await login(formData.email, formData.password);
+      setLoading(false);
+      
+      if (resultado.success) {
         navigate('/productos');
       } else {
-        setLoginError('Credenciales incorrectas. Use gabr.pina@duocuc.cl / 123321');
+        setLoginError(resultado.mensaje || 'Error al iniciar sesión');
       }
     }
   };
 
   return (
     <Container className="my-4" style={{ maxWidth: '520px' }}>
-      <h1 className="h3 text-center">Ingresar</h1>
+      <h1 className="h3 text-center mb-4">Ingresar</h1>
       {loginError && (
         <Alert variant="danger" className="my-3">
           {loginError}
@@ -51,11 +70,12 @@ function Login() {
           <Form.Label>Correo *</Form.Label>
           <Form.Control
             type="email"
+            name="email"
             value={formData.email}
-            onChange={(e) => setFormData({...formData, email: e.target.value})}
-            maxLength={100}
-            placeholder="usuario@duoc.cl / profesor.duoc.cl / gmail.com"
+            onChange={handleChange}
+            placeholder="usuario@email.com"
             isInvalid={!!errors.email}
+            disabled={loading}
           />
           <Form.Control.Feedback type="invalid">
             {errors.email}
@@ -66,10 +86,12 @@ function Login() {
           <Form.Label>Contraseña *</Form.Label>
           <Form.Control
             type="password"
+            name="password"
             value={formData.password}
-            onChange={(e) => setFormData({...formData, password: e.target.value})}
-            maxLength={10}
+            onChange={handleChange}
+            placeholder="Tu contraseña"
             isInvalid={!!errors.password}
+            disabled={loading}
           />
           <Form.Control.Feedback type="invalid">
             {errors.password}
@@ -77,8 +99,14 @@ function Login() {
         </Form.Group>
 
         <div className="d-grid">
-          <Button type="submit">Ingresar</Button>
+          <Button type="submit" disabled={loading} size="lg">
+            {loading ? 'Ingresando...' : 'Ingresar'}
+          </Button>
         </div>
+
+        <p className="text-center mt-3">
+          ¿No tienes cuenta? <Link to="/registrar">Regístrate aquí</Link>
+        </p>
       </Form>
     </Container>
   );
